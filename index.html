@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoundShelf — a community record crate</title>
+  <meta name="description" content="Share music, not playlists. Drop a Spotify or YouTube link and watch it spin.">
+  <meta name="theme-color" content="#0a0a0f">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=15">
+</head>
+<body>
+
+  <canvas id="gridCanvas"></canvas>
+
+  <div class="dust-overlay"></div>
+
+  <div class="ambient-glow"></div>
+
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title">
+        <span class="title-sound">Sound</span><span class="title-shelf">Shelf</span>
+      </h1>
+      <div class="header-rule"></div>
+      <p class="header-tagline">"a community record crate"</p>
+    </div>
+  </header>
+
+  <section class="turntable-section">
+    <div class="turntable">
+      <div class="turntable-body">
+        <div class="power-led" id="powerLed"></div>
+        <div class="brand-plate">SoundShelf</div>
+        <div class="platter">
+          <div class="platter-chrome"></div>
+          <div class="platter-ridge"></div>
+          <div class="felt-mat"></div>
+          <div class="vinyl" id="turntableVinyl">
+            <div class="vinyl-grooves"></div>
+            <div class="vinyl-label" id="turntableLabel">
+              <span class="vinyl-label-text">SS</span>
+            </div>
+            <div class="vinyl-shine"></div>
+            <div class="vinyl-iridescence"></div>
+            <div class="vinyl-hole"></div>
+          </div>
+          <div class="spindle"></div>
+          <div class="visualizer-ring" id="visualizerRing"></div>
+        </div>
+        <div class="tonearm-assembly">
+          <div class="tonearm-rest"></div>
+          <div class="tonearm-base"></div>
+          <div class="tonearm" id="tonearm">
+            <div class="tonearm-arm"></div>
+            <div class="tonearm-head">
+              <div class="tonearm-cartridge"></div>
+              <div class="tonearm-stylus"></div>
+            </div>
+            <div class="tonearm-counterweight"></div>
+          </div>
+        </div>
+        <div class="speed-selector">
+          <span class="speed-dot active"></span>
+          <span class="speed-label">33</span>
+          <span class="speed-dot"></span>
+          <span class="speed-label dim">45</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="now-playing" id="nowPlaying">
+      <div class="now-playing-idle" id="nowPlayingIdle">
+        <div class="idle-vinyl">
+          <div class="idle-vinyl-inner"></div>
+        </div>
+        <p class="idle-text">Pick a record from the crate</p>
+        <p class="idle-subtext">click any vinyl below</p>
+      </div>
+      <div class="now-playing-active" id="nowPlayingActive" style="display:none;">
+        <div class="now-playing-header">
+          <div class="eq-bars">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span class="np-label">NOW PLAYING</span>
+          <div class="eq-bars">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="now-playing-info">
+          <h3 class="now-playing-title" id="nowPlayingTitle">—</h3>
+          <p class="now-playing-artist" id="nowPlayingArtist">—</p>
+          <div class="now-playing-platform" id="nowPlayingPlatform"></div>
+        </div>
+        <div class="now-playing-controls">
+          <button class="btn-stop" id="btnStop" title="Stop playback">
+            <span class="stop-icon"></span> Stop
+          </button>
+          <a class="btn-open" id="btnOpen" href="#" target="_blank" rel="noopener" title="Open in app">
+            Open <span class="arrow-icon"></span>
+          </a>
+        </div>
+        <div class="embed-container" id="embedContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="submit-section">
+    <div class="submit-slot">
+      <div class="slot-screws">
+        <span class="screw"></span>
+        <span class="screw"></span>
+      </div>
+      <h2 class="submit-title">Drop a Record</h2>
+      <p class="submit-subtitle">Paste a Spotify track or YouTube video link</p>
+      <form class="submit-form" id="submitForm">
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <input
+            type="url"
+            id="linkInput"
+            class="link-input"
+            placeholder="https://open.spotify.com/track/..."
+            autocomplete="off"
+            required
+          >
+          <button type="submit" class="btn-drop" id="btnDrop">
+            <span class="btn-drop-text">Drop It</span>
+            <span class="btn-drop-icon">&#9835;</span>
+          </button>
+        </div>
+        <p class="submit-feedback" id="submitFeedback"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="crate-section">
+    <div class="crate-header">
+      <h2 class="crate-title">The Crate</h2>
+      <span class="crate-count" id="crateCount"></span>
+    </div>
+    <div class="crate-grid" id="crateGrid">
+    </div>
+    <div class="crate-empty" id="crateEmpty">
+      <div class="empty-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      </div>
+      <p>No records yet.</p>
+      <p class="empty-sub">Be the first to drop one!</p>
+    </div>
+    <div class="crate-loading" id="crateLoading">
+      <div class="loading-vinyl">
+        <div class="loading-vinyl-inner"></div>
+      </div>
+      <p>Digging through the crate...</p>
+    </div>
+  </section>
+
+  <div class="bottom-viz-section">
+    <div class="bottom-viz" id="bottomViz">
+      <canvas id="waveformCanvas"></canvas>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">SoundShelf</p>
+      <p class="footer-text">"Share music, not playlists."</p>
+    </div>
+  </footer>
+
+  <script src="script.js?v=16"></script>
+</body>
+</html>
